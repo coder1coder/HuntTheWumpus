@@ -208,7 +208,7 @@ namespace HuntTheWumpus
                     string content = " ";
                     if (Map[i,j] != null)
                     {
-                        content = ((Entity)Map[i, j]).Symbol;
+                        content = ((Unit)Map[i, j]).Symbol;
 
                         if (!ShowEnemies && !(Map[i, j] is Player))
                             content = " ";

@@ -1,6 +1,6 @@
 ﻿namespace HuntTheWumpus.Model
 {
-    internal class Player : Entity
+    internal class Player : Unit
     {
         public Player()
         {

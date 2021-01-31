@@ -1,6 +1,6 @@
 ﻿namespace HuntTheWumpus.Model
 {
-    internal class Wumpus: Entity
+    internal class Wumpus: Unit
     {
         public Wumpus()
         {
