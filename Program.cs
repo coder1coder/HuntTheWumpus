@@ -8,7 +8,7 @@ namespace HuntTheWumpus
         static void Main(string[] args)
         {
             Console.OutputEncoding = Encoding.UTF8;
-            var game = new Game(showBatsAndHoles: true);
+            var game = new Game(showEnemies: true);
             game.Start();
         }
     }

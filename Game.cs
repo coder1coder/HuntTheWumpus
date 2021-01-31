@@ -111,15 +111,15 @@ namespace HuntTheWumpus
         private Player Player { get; set; }
         private Wumpus Wumpus { get; set; }
 
-        private bool ShowBatsAndHoles { get; set; }
+        private bool ShowEnemies { get; set; }
 
         private string Log { get; set; }
         private int Steps { get; set; }
         public bool IsGameOver { get; private set; }
 
-        public Game(byte height = 9, byte width = 9, byte batsCount = 2, byte holesCount = 2, bool showBatsAndHoles = false)
+        public Game(byte height = 9, byte width = 9, byte batsCount = 2, byte holesCount = 2, bool showEnemies = false)
         {
-            ShowBatsAndHoles = showBatsAndHoles;
+            ShowEnemies = showEnemies;
 
             Randomizer = new Random();
 
@@ -210,7 +210,7 @@ namespace HuntTheWumpus
                     {
                         content = ((Entity)Map[i, j]).Symbol;
 
-                        if (!ShowBatsAndHoles && (Map[i, j] is Bat || Map[i, j] is Hole))
+                        if (!ShowEnemies && !(Map[i, j] is Player))
                             content = " ";
                     }
 
@@ -234,6 +234,9 @@ namespace HuntTheWumpus
                         {
                             switch (Map[h, w])
                             {
+                                case Wumpus wumpus:
+                                    AddLog("Вы чувствуете вонь");
+                                    break;
                                 case Bat bat:
                                     AddLog("Вы чувствуете шелест");
                                     break;
