@@ -7,9 +7,9 @@
             Symbol = "@";
         }
 
-        public void MoveUp() => PositionY -= 1;
-        public void MoveDown() => PositionY += 1;
-        public void MoveLeft() => PositionX -= 1;
-        public void MoveRight() => PositionX += 1;
+        public void MoveUp() => Position.Y -= 1;
+        public void MoveDown() => Position.Y += 1;
+        public void MoveLeft() => Position.X -= 1;
+        public void MoveRight() => Position.X += 1;
     }
 }

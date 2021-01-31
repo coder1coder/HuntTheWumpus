@@ -1,4 +1,5 @@
-﻿using HuntTheWumpus.Model;
+﻿using ConsoleGame.Model;
+using HuntTheWumpus.Model;
 using System;
 
 namespace HuntTheWumpus
@@ -18,19 +19,19 @@ namespace HuntTheWumpus
                 switch (_input.Key)
                 {
                     case (ConsoleKey.UpArrow):
-                        if (Player.PositionY > 0)
+                        if (Player.Position.Y > 0)
                             Player.MoveUp();
                         break;
                     case (ConsoleKey.DownArrow):
-                        if (Player.PositionY < Map.GetLength(0) - 1)
+                        if (Player.Position.Y < Map.GetLength(0) - 1)
                             Player.MoveDown();
                         break;
                     case (ConsoleKey.LeftArrow):
-                        if (Player.PositionX > 0)
+                        if (Player.Position.X > 0)
                             Player.MoveLeft();
                         break;
                     case (ConsoleKey.RightArrow):
-                        if (Player.PositionX < Map.GetLength(1) - 1)
+                        if (Player.Position.X < Map.GetLength(1) - 1)
                             Player.MoveRight();
                         break;
                     case (ConsoleKey.Spacebar):
@@ -56,26 +57,26 @@ namespace HuntTheWumpus
 
         private void WumpusGo()
         {
-            var lastY = Wumpus.PositionY;
-            var lastX = Wumpus.PositionX;
+            var lastY = Wumpus.Position.Y;
+            var lastX = Wumpus.Position.X;
 
             bool dorepeat;
 
-            Map[Wumpus.PositionY, Wumpus.PositionX] = null;
+            Map[Wumpus.Position.Y, Wumpus.Position.X] = null;
 
             do
             {
-                Wumpus.PositionY = Randomizer.Next(Wumpus.PositionY - 1, Wumpus.PositionY + 2);
-                Wumpus.PositionX = Randomizer.Next(Wumpus.PositionX - 1, Wumpus.PositionX + 2);
+                Wumpus.Position.Y = Randomizer.Next(Wumpus.Position.Y - 1, Wumpus.Position.Y + 2);
+                Wumpus.Position.X = Randomizer.Next(Wumpus.Position.X - 1, Wumpus.Position.X + 2);
 
                 //большие проблемы с множественными условиями, голова уехала, но надо сделать по человечески исключив try catch
                 try
                 {
-                    dorepeat = (Wumpus.PositionY < 0 || Wumpus.PositionY >= Map.GetLength(0) || Wumpus.PositionX < 0 || Wumpus.PositionX >= Map.GetLength(0))
+                    dorepeat = (Wumpus.Position.Y < 0 || Wumpus.Position.Y >= Map.GetLength(0) || Wumpus.Position.X < 0 || Wumpus.Position.X >= Map.GetLength(0))
                     &&
-                    (Map[Wumpus.PositionY, Wumpus.PositionX] is Bat || Map[Wumpus.PositionY, Wumpus.PositionX] is Hole)
+                    (Map[Wumpus.Position.Y, Wumpus.Position.X] is Bat || Map[Wumpus.Position.Y, Wumpus.Position.X] is Hole)
                     &&
-                    Wumpus.PositionX == lastX && Wumpus.PositionY == lastY;
+                    Wumpus.Position.X == lastX && Wumpus.Position.Y == lastY;
                 }
                 catch (IndexOutOfRangeException)
                 {
@@ -85,12 +86,12 @@ namespace HuntTheWumpus
             }
             while (dorepeat);
 
-            Map[Wumpus.PositionY, Wumpus.PositionX] = Wumpus;
+            Map[Wumpus.Position.Y, Wumpus.Position.X] = Wumpus;
         }
 
         private void ValidateDeath()
         {
-            switch(Map[Player.PositionY, Player.PositionX])
+            switch(Map[Player.Position.Y, Player.Position.X])
             {
                 case Wumpus wumpus:
                     AddLog("Wumpuuuuuuuuusss!!!!");
@@ -125,26 +126,25 @@ namespace HuntTheWumpus
 
             Map = new object[(height < 9) ? 9 : height, (width < 9) ? 9 : width];
 
-            Player = new Player()
-            {
-                PositionX = (int)Math.Ceiling((double)Map.GetLength(1) / 2),
-                PositionY = (int)Math.Ceiling((double)Map.GetLength(0) / 2)
-            };
+            Player = new Player();
+            Player.Position.Set(
+                (byte)Math.Ceiling((double)Map.GetLength(1) / 2),
+                (byte)Math.Ceiling((double)Map.GetLength(0) / 2)
+            );
 
-            Map[Player.PositionY, Player.PositionX] = Player;
+            Map[Player.Position.Y, Player.Position.X] = Player;
 
             Wumpus = new Wumpus();
 
             do
             {
-                Wumpus.PositionX = Randomizer.Next(0, Map.GetLength(1) - 1);
-                Wumpus.PositionY = Randomizer.Next(0, Map.GetLength(0) - 1);
+                Wumpus.Position.Set((byte)Randomizer.Next(0, Map.GetLength(1) - 1), (byte)Randomizer.Next(0, Map.GetLength(0) - 1));
             }
-            while (!(Wumpus.PositionX < (Player.PositionX - 1) || Wumpus.PositionX > (Player.PositionX + 1))
+            while (!(Wumpus.Position.X < (Player.Position.X - 1) || Wumpus.Position.X > (Player.Position.X + 1))
                 &&
-            !(Wumpus.PositionY < (Player.PositionY - 1) || Wumpus.PositionY > (Player.PositionY + 1)));
+            !(Wumpus.Position.Y < (Player.Position.Y - 1) || Wumpus.Position.Y > (Player.Position.Y + 1)));
 
-            Map[Wumpus.PositionY, Wumpus.PositionX] = Wumpus;
+            Map[Wumpus.Position.Y, Wumpus.Position.X] = Wumpus;
 
             for (int i = 0; i < batsCount; i++)
             {
@@ -152,12 +152,12 @@ namespace HuntTheWumpus
 
                 do
                 {
-                    bat.PositionX = Randomizer.Next(0, Map.GetLength(1) - 1);
-                    bat.PositionY = Randomizer.Next(0, Map.GetLength(0) - 1);
+                    bat.Position.X = (byte)Randomizer.Next(0, Map.GetLength(1) - 1);
+                    bat.Position.Y = (byte)Randomizer.Next(0, Map.GetLength(0) - 1);
                 }
-                while (Map[bat.PositionY, bat.PositionX] != null);
+                while (Map[bat.Position.Y, bat.Position.X] != null);
 
-                Map[bat.PositionY, bat.PositionX] = bat;
+                Map[bat.Position.Y, bat.Position.X] = bat;
             }
 
             for (int i = 0; i < holesCount; i++)
@@ -165,12 +165,12 @@ namespace HuntTheWumpus
                 var hole = new Hole();
                 do
                 {
-                    hole.PositionX = Randomizer.Next(0, Map.GetLength(1) - 1);
-                    hole.PositionY = Randomizer.Next(0, Map.GetLength(0) - 1);
+                    hole.Position.X = (byte)Randomizer.Next(0, Map.GetLength(1) - 1);
+                    hole.Position.Y = (byte)Randomizer.Next(0, Map.GetLength(0) - 1);
                 }
-                while (Map[hole.PositionY, hole.PositionX] != null);
+                while (Map[hole.Position.Y, hole.Position.X] != null);
 
-                Map[hole.PositionY, hole.PositionX] = hole;
+                Map[hole.Position.Y, hole.Position.X] = hole;
             }
         }
         
@@ -224,9 +224,9 @@ namespace HuntTheWumpus
         
         private void ShowMessageIfNearDanger()
         {
-            for (int h = Player.PositionY - 1; h < Player.PositionY + 2; h++)
+            for (int h = Player.Position.Y - 1; h < Player.Position.Y + 2; h++)
             {
-                for (int w = Player.PositionX - 1; w < Player.PositionX + 2; w++)
+                for (int w = Player.Position.X - 1; w < Player.Position.X + 2; w++)
                 {
                     if (h >= 0 && w >=0 && h < Map.GetLength(1) && w < Map.GetLength(0))
                     {
@@ -252,13 +252,13 @@ namespace HuntTheWumpus
         private bool IsWumpusNear()
         {
             return 
-                Wumpus.PositionY >= Player.PositionY - 1 
+                Wumpus.Position.Y >= Player.Position.Y - 1 
                 && 
-                Wumpus.PositionY <= Player.PositionY + 1 
+                Wumpus.Position.Y <= Player.Position.Y + 1 
                 && 
-                Wumpus.PositionX >= Player.PositionX - 1 
+                Wumpus.Position.X >= Player.Position.X - 1 
                 && 
-                Wumpus.PositionX <= Player.PositionX + 1;
+                Wumpus.Position.X <= Player.Position.X + 1;
 
         }
         private void UpdatePlayerPosition(Player player)
@@ -272,7 +272,7 @@ namespace HuntTheWumpus
                         break;
                     }
                 }
-            Map[player.PositionY, player.PositionX] = player;
+            Map[player.Position.Y, player.Position.X] = player;
         }
 
         public void AddLog(string message)
