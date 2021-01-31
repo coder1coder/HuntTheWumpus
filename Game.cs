@@ -66,8 +66,10 @@ namespace HuntTheWumpus
 
             do
             {
-                Wumpus.Position.Y = Randomizer.Next(Wumpus.Position.Y - 1, Wumpus.Position.Y + 2);
-                Wumpus.Position.X = Randomizer.Next(Wumpus.Position.X - 1, Wumpus.Position.X + 2);
+                Wumpus.Position.Set(
+                    (byte)Randomizer.Next(Wumpus.Position.X - 1, Wumpus.Position.X + 2),
+                    (byte)Randomizer.Next(Wumpus.Position.Y - 1, Wumpus.Position.Y + 2)
+                );
 
                 //большие проблемы с множественными условиями, голова уехала, но надо сделать по человечески исключив try catch
                 try

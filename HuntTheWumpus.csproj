@@ -45,7 +45,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Model\Bat.cs" />
-    <Compile Include="Model\Entity.cs" />
+    <Compile Include="Model\Position.cs" />
+    <Compile Include="Model\Unit.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="Model\Hole.cs" />
     <Compile Include="Model\Player.cs" />
