@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="Model\Bat.cs" />
     <Compile Include="Model\Map.cs" />
+    <Compile Include="Model\MapSize.cs" />
     <Compile Include="Model\Position.cs" />
     <Compile Include="Model\Unit.cs" />
     <Compile Include="Game.cs" />
