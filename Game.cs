@@ -19,20 +19,23 @@ namespace HuntTheWumpus
                 switch (_input.Key)
                 {
                     case (ConsoleKey.UpArrow):
-                        if (Player.Position.Y > 0)
-                            Player.MoveUp();
+                        if (_input.Modifiers == ConsoleModifiers.Control)
+                            Player.Shot(Unit.Direction.UP);
+                        else 
+                            if (Player.Position.Y > 0)
+                                Player.Move(Unit.Direction.UP);
                         break;
                     case (ConsoleKey.DownArrow):
                         if (Player.Position.Y < Map.GetLength(0) - 1)
-                            Player.MoveDown();
+                            Player.Move(Unit.Direction.DOWN);
                         break;
                     case (ConsoleKey.LeftArrow):
                         if (Player.Position.X > 0)
-                            Player.MoveLeft();
+                            Player.Move(Unit.Direction.LEFT);
                         break;
                     case (ConsoleKey.RightArrow):
                         if (Player.Position.X < Map.GetLength(1) - 1)
-                            Player.MoveRight();
+                            Player.Move(Unit.Direction.RIGHT);
                         break;
                     case (ConsoleKey.Spacebar):
 
@@ -62,7 +65,7 @@ namespace HuntTheWumpus
 
             bool dorepeat;
 
-            Map[Wumpus.Position.Y, Wumpus.Position.X] = null;
+            Map.ClearUnitAtPosition(Wumpus.Position);
 
             do
             {
@@ -88,7 +91,7 @@ namespace HuntTheWumpus
             }
             while (dorepeat);
 
-            Map[Wumpus.Position.Y, Wumpus.Position.X] = Wumpus;
+            Map.SetUnitAtPosition(Wumpus, Wumpus.Position);
         }
 
         private void ValidateDeath()
@@ -110,7 +113,7 @@ namespace HuntTheWumpus
             }
         }
 
-        private object[,] Map { get; set; }
+        private Map Map { get; set; }
         private Player Player { get; set; }
         private Wumpus Wumpus { get; set; }
 
@@ -126,7 +129,7 @@ namespace HuntTheWumpus
 
             Randomizer = new Random();
 
-            Map = new object[(height < 9) ? 9 : height, (width < 9) ? 9 : width];
+            Map = new Map(width, height);
 
             Player = new Player();
             Player.Position.Set(
@@ -134,7 +137,7 @@ namespace HuntTheWumpus
                 (byte)Math.Ceiling((double)Map.GetLength(0) / 2)
             );
 
-            Map[Player.Position.Y, Player.Position.X] = Player;
+            Map.SetUnitAtPosition(Player, Player.Position);
 
             Wumpus = new Wumpus();
 
@@ -146,7 +149,7 @@ namespace HuntTheWumpus
                 &&
             !(Wumpus.Position.Y < (Player.Position.Y - 1) || Wumpus.Position.Y > (Player.Position.Y + 1)));
 
-            Map[Wumpus.Position.Y, Wumpus.Position.X] = Wumpus;
+            Map.SetUnitAtPosition(Wumpus, Wumpus.Position);
 
             for (int i = 0; i < batsCount; i++)
             {
@@ -159,7 +162,7 @@ namespace HuntTheWumpus
                 }
                 while (Map[bat.Position.Y, bat.Position.X] != null);
 
-                Map[bat.Position.Y, bat.Position.X] = bat;
+                Map.SetUnitAtPosition(bat, bat.Position);
             }
 
             for (int i = 0; i < holesCount; i++)
@@ -172,7 +175,7 @@ namespace HuntTheWumpus
                 }
                 while (Map[hole.Position.Y, hole.Position.X] != null);
 
-                Map[hole.Position.Y, hole.Position.X] = hole;
+                Map.SetUnitAtPosition(hole, hole.Position);
             }
         }
         
@@ -265,16 +268,17 @@ namespace HuntTheWumpus
         }
         private void UpdatePlayerPosition(Player player)
         {
-            for (int i = 0; i < Map.GetLength(0); i++)
-                for (int j = 0; j < Map.GetLength(1); j++)
+            for (byte i = 0; i < Map.GetLength(0); i++)
+                for (byte j = 0; j < Map.GetLength(1); j++)
                 {
                     if (Map[i, j] is Player)
                     {
-                        Map[i, j] = null;
+                        Map.ClearUnitAtPosition(i, j);
                         break;
                     }
                 }
-            Map[player.Position.Y, player.Position.X] = player;
+
+            Map.SetUnitAtPosition(player, player.Position);
         }
 
         public void AddLog(string message)
