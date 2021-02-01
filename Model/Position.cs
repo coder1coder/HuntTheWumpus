@@ -2,16 +2,15 @@
 {
     class Position
     {
-        public byte X { get; set; }
-        public byte Y { get; set; }
+        public int X { get; set; }
+        public int Y { get; set; }
 
-        public  Position(byte x, byte y)
+        public Position()
         {
-            X = x;
-            Y = y;
+            X = 0;
+            Y = 0;
         }
-
-        public void Set(byte x, byte y)
+        public Position(int x, int y)
         {
             X = x;
             Y = y;
