@@ -1,6 +1,4 @@
-﻿using ConsoleGame.Model;
-
-namespace HuntTheWumpus.Model
+﻿namespace HuntTheWumpus.Model
 {
     abstract class Unit
     {
