@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{732A8738-D972-461D-AE9A-9A68CE9C1F41}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>ConsoleGame</RootNamespace>
-    <AssemblyName>ConsoleGame</AssemblyName>
+    <RootNamespace>HuntTheWumpus</RootNamespace>
+    <AssemblyName>HuntTheWumpus</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Log.cs" />
     <Compile Include="Model\Bat.cs" />
     <Compile Include="Model\Map.cs" />
     <Compile Include="Model\MapSize.cs" />
