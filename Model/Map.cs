@@ -1,42 +1,26 @@
-﻿using HuntTheWumpus.Model;
-
-namespace ConsoleGame.Model
+﻿namespace HuntTheWumpus.Model
 {
     class Map
     {
         private readonly Unit[,] _map;
 
-        public MapSize Size { get; private set; }
+        public MapSize Size => new MapSize((byte)_map.GetLength(1), (byte)_map.GetLength(0));
 
         public Map(byte width, byte height)
         {
+            //minimum size 9x9
             _map = new Unit[(height < 9) ? 9 : height, (width < 9) ? 9 : width];
-            Size = new MapSize((byte)_map.GetLength(1), (byte)_map.GetLength(0));
         }
 
-        internal void ClearUnitAtPosition(Position position)
-        {
-            ClearUnitAtPosition(position.X, position.Y);
-        }
+        internal void RemoveUnitFromPosition(Position position) => RemoveUnitFromPosition(position.X, position.Y);
+        internal void RemoveUnitFromPosition(int x, int y) => _map[y, x] = null;
 
-        internal void ClearUnitAtPosition(int x, int y)
-        {
-            _map[y, x] = null;
-        }
-
-        internal Unit GetUnitAtPosition(int x, int y)
-        {
-            return _map[y, x] ?? null;
-        }
-
-        internal Unit GetUnitAtPosition(Position position)
-        {
-            return GetUnitAtPosition(position.X, position.Y);
-        }
+        internal Unit GetUnitAtPosition(int x, int y) => _map[y, x] ?? null;
+        internal Unit GetUnitAtPosition(Position position) => GetUnitAtPosition(position.X, position.Y);
 
         internal Unit MoveUnit(Unit unit, Unit.Direction direction)
         {
-            ClearUnitAtPosition(unit.Position);
+            RemoveUnitFromPosition(unit.Position);
 
             switch(direction)
             {
@@ -61,21 +45,14 @@ namespace ConsoleGame.Model
             _map[unit.Position.Y, unit.Position.X] = unit;
             return unit;
         }
-        internal Unit MoveUnit(Unit unit, Position position)
-        {
-            ClearUnitAtPosition(unit.Position);
-            unit.Position = position;
-
-            _map[unit.Position.Y, unit.Position.X] = unit;
-            return unit;
-        }
         internal Unit MoveUnit(Unit unit, int x, int y)
         {
-            ClearUnitAtPosition(unit.Position.X, unit.Position.Y);
+            RemoveUnitFromPosition(unit.Position.X, unit.Position.Y);
             unit.Position.X = x;
             unit.Position.Y = y;
             _map[y, x] = unit;
             return unit;
         }
+        internal Unit MoveUnit(Unit unit, Position position) => MoveUnit(unit, position.X, position.Y);
     }
 }
