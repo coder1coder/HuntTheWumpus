@@ -1,28 +1,23 @@
-﻿using ConsoleGame.Model;
-using HuntTheWumpus.Model;
+﻿using HuntTheWumpus.Model;
 using System;
 
 namespace HuntTheWumpus
 {
     internal class Game
     {
-        private readonly Random _randomizer;
-
         private Map Map { get; set; }
         private Player Player { get; set; }
         private Wumpus Wumpus { get; set; }
 
         private bool ShowEnemies { get; set; }
 
-        private string Log { get; set; }
+        private Log Log { get; set; } = new Log();
         private int Steps { get; set; }
         public bool IsGameOver { get; private set; }
 
         public Game(byte height = 9, byte width = 9, byte batsCount = 2, byte holesCount = 2, bool showEnemies = false)
         {
             ShowEnemies = showEnemies;
-
-            _randomizer = new Random();
 
             Map = new Map(width, height);
 
@@ -35,13 +30,15 @@ namespace HuntTheWumpus
             //generate wumpus on map
             do
             {
-                randX = _randomizer.Next(0, Map.Size.Width - 1);
-                randY = _randomizer.Next(0, Map.Size.Height - 1);
+                randX = new Random().Next(0, Map.Size.Width - 1);
+                randY = new Random().Next(0, Map.Size.Height - 1);
             }
             while (
                 !(
+                //wumpus inside map width/height
                 randX >=0 && randX < Map.Size.Width && randY >= 0 && randY < Map.Size.Height
                 &&
+                //not player position
                 (randX < (Player.Position.X - 1) || randX > (Player.Position.X + 1))
                 &&
                 (randY < (Player.Position.Y - 1) || randY > (Player.Position.Y + 1))
@@ -54,8 +51,8 @@ namespace HuntTheWumpus
             {
                 do
                 {
-                    randX = _randomizer.Next(0, Map.Size.Width - 1);
-                    randY = _randomizer.Next(0, Map.Size.Height - 1);
+                    randX = new Random().Next(0, Map.Size.Width - 1);
+                    randY = new Random().Next(0, Map.Size.Height - 1);
                 }
                 while (Map.GetUnitAtPosition(randX, randY) != null);
 
@@ -67,8 +64,8 @@ namespace HuntTheWumpus
             {
                 do
                 {
-                    randX = _randomizer.Next(0, Map.Size.Width - 1);
-                    randY = _randomizer.Next(0, Map.Size.Height - 1);
+                    randX = new Random().Next(0, Map.Size.Width - 1);
+                    randY = new Random().Next(0, Map.Size.Height - 1);
                 }
                 while (Map.GetUnitAtPosition(randX, randY) != null);
 
@@ -84,48 +81,43 @@ namespace HuntTheWumpus
 
             do
             {
-                AddLog("====\tРаунд: " + Steps + "\t====");
-                Draw();
+                Log.Add("====\tРаунд: " + Steps + "\t====");
+                Render();
 
-                input = Console.ReadKey();
+                input = Console.ReadKey(true);
 
-                if (input.Key == ConsoleKey.LeftArrow 
-                    || input.Key == ConsoleKey.RightArrow 
-                    || input.Key == ConsoleKey.UpArrow 
-                    || input.Key == ConsoleKey.DownArrow
-                    || input.Key == ConsoleKey.W
-                    || input.Key == ConsoleKey.A
-                    || input.Key == ConsoleKey.S
-                    || input.Key == ConsoleKey.D
+                if (input.Key == ConsoleKey.LeftArrow || input.Key == ConsoleKey.RightArrow 
+                    || input.Key == ConsoleKey.UpArrow || input.Key == ConsoleKey.DownArrow
+                    || input.Key == ConsoleKey.W || input.Key == ConsoleKey.A
+                    || input.Key == ConsoleKey.S || input.Key == ConsoleKey.D
                     )
                 {
                     PlayerGo(input);
 
                     if (!IsGameOver)
                     {
-                        ValidateDeath();
+                        CheckGameOver();
                         WumpusGo();
-                        ValidateDeath();
+                        CheckGameOver();
                     }
 
                     Steps++;
                 }
             }
-            while (input.Key != ConsoleKey.Escape && !IsGameOver);//wtf?why AND, not OR?
-            
-            if (IsGameOver)
-            {
-                AddLog("Игра окончена. Затрачено ходов: " + Steps);
-                Draw();
-            }
+            while (!(input.Key == ConsoleKey.Escape ||  IsGameOver));
 
+            if (IsGameOver)
+                Console.WriteLine("Игра окончена. Затрачено ходов: " + Steps);
+
+            Console.WriteLine("Нажмите любую клавишу для выхода..");
             Console.ReadKey();
         }
-        public void Draw()
+        public void Render()
         {
-            ShowMessageIfNearDanger();
-
             Console.Clear();
+
+            //Checking because info player after game started
+            ShowMessageIfNearDanger();
 
             for (int y = 0; y < Map.Size.Height; y++)
             {
@@ -143,7 +135,7 @@ namespace HuntTheWumpus
                             content = " ";
                     }
 
-                    Console.Write('[' + content + ']');
+                    Console.Write('['+ content + ']');
                 }
                 Console.WriteLine();
             }
@@ -154,7 +146,6 @@ namespace HuntTheWumpus
         private void ShowMessageIfNearDanger()
         {
             for (int y = Player.Position.Y - 1; y < Player.Position.Y + 2; y++)
-            {
                 for (int x = Player.Position.X - 1; x < Player.Position.X + 2; x++)
                 {
                     if (y >= 0 && x >=0 && y < Map.Size.Height && x < Map.Size.Width)
@@ -164,30 +155,25 @@ namespace HuntTheWumpus
                             switch (Map.GetUnitAtPosition(x, y))
                             {
                                 case Wumpus wumpus:
-                                    AddLog("Вы чувствуете вонь");
+                                    Log.Add("Вы чувствуете вонь");
                                     break;
                                 case Bat bat:
-                                    AddLog("Вы чувствуете шелест");
+                                    Log.Add("Вы чувствуете шелест");
                                     break;
                                 case Hole hole:
-                                    AddLog("Вы чувствуете сквозняк");
+                                    Log.Add("Вы чувствуете сквозняк");
                                     break;
                             }
                         }
                     }
                 }
-            }
-        }
-
-        public void AddLog(string message)
-        {
-            Log = message + "\r\n" + Log;
         }
 
         //may be has a bag, dont go to down
-        //kill randomizer
+        //fucking randomizer
         private void WumpusGo()
         {
+            //Adding possible positions
             var positions = new Position[] {
                 new Position(Wumpus.Position.X - 1, Wumpus.Position.Y),
                 new Position(Wumpus.Position.X + 1, Wumpus.Position.Y),
@@ -195,8 +181,8 @@ namespace HuntTheWumpus
                 new Position(Wumpus.Position.X, Wumpus.Position.Y + 1),
             };
 
+            //Excluding bad positions
             var filteredPositions = new Position[] { };
-
             for (int i = 0; i < 4; i++)
             {
                 var canUsePosition =
@@ -213,7 +199,7 @@ namespace HuntTheWumpus
                 }
             }
 
-            var randIdx = _randomizer.Next(0, filteredPositions.Length - 1);
+            var randIdx = new Random().Next(0, filteredPositions.Length - 1);// - bag
 
             Wumpus = (Wumpus)Map.MoveUnit(Wumpus, filteredPositions[randIdx]);
         }
@@ -234,36 +220,33 @@ namespace HuntTheWumpus
                     Player = (Player)Map.MoveUnit(Player, Unit.Direction.RIGHT);
                     break;
                 case (ConsoleKey.W):
-                    IsGameOver = Wumpus.Position.X == Player.Position.X - 1;
+                    IsGameOver = Wumpus.Position.Y == Player.Position.Y - 1;
                     break;
                 case (ConsoleKey.S):
-                    IsGameOver = Wumpus.Position.X == Player.Position.X - 1;
+                    IsGameOver = Wumpus.Position.Y == Player.Position.Y + 1;
                     break;
                 case (ConsoleKey.A):
                     IsGameOver = Wumpus.Position.X == Player.Position.X - 1;
                     break;
                 case (ConsoleKey.D):
-                    IsGameOver = Wumpus.Position.X == Player.Position.X - 1;
+                    IsGameOver = Wumpus.Position.X == Player.Position.X + 1;
                     break;
             }
-
-            if (!IsGameOver)
-                AddLog("Выстрел в воздух, какая досада :(");
         }
-        private void ValidateDeath()
+        private void CheckGameOver()
         {
             switch (Map.GetUnitAtPosition(Player.Position))
             {
-                case Wumpus wumpus:
-                    AddLog("Wumpuuuuuuuuusss!!!!");
+                case Wumpus _:
+                    Log.Add("Wumpus победил.");
                     IsGameOver = true;
                     break;
-                case Bat bat:
-                    AddLog("Вас сожрали летучие мыши!");
+                case Bat _:
+                    Log.Add("Вас сожрали летучие мыши.");
                     IsGameOver = true;
                     break;
-                case Hole hole:
-                    AddLog("Вы упали в яму!");
+                case Hole _:
+                    Log.Add("Вы упали в яму.");
                     IsGameOver = true;
                     break;
             }
