@@ -1,4 +1,4 @@
-﻿namespace ConsoleGame.Model
+﻿namespace HuntTheWumpus.Model
 {
     class MapSize
     {
