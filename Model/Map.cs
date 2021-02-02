@@ -12,15 +12,15 @@
             _map = new Unit[(height < 9) ? 9 : height, (width < 9) ? 9 : width];
         }
 
-        internal void RemoveUnitFromPosition(Position position) => RemoveUnitFromPosition(position.X, position.Y);
-        internal void RemoveUnitFromPosition(int x, int y) => _map[y, x] = null;
+        internal void RemoveUnit(Position position) => RemoveUnit(position.X, position.Y);
+        internal void RemoveUnit(int x, int y) => _map[y, x] = null;
 
-        internal Unit GetUnitAtPosition(int x, int y) => _map[y, x] ?? null;
-        internal Unit GetUnitAtPosition(Position position) => GetUnitAtPosition(position.X, position.Y);
+        internal Unit GetUnit(int x, int y) => _map[y, x] ?? null;
+        internal Unit GetUnit(Position position) => GetUnit(position.X, position.Y);
 
         internal Unit MoveUnit(Unit unit, Unit.Direction direction)
         {
-            RemoveUnitFromPosition(unit.Position);
+            RemoveUnit(unit.Position);
 
             switch(direction)
             {
@@ -42,17 +42,23 @@
                     break;
             }
 
-            _map[unit.Position.Y, unit.Position.X] = unit;
-            return unit;
+            return AddUnit(unit, unit.Position);
         }
         internal Unit MoveUnit(Unit unit, int x, int y)
         {
-            RemoveUnitFromPosition(unit.Position.X, unit.Position.Y);
+            RemoveUnit(unit.Position.X, unit.Position.Y);
+            return AddUnit(unit, x, y);
+        }
+        internal Unit MoveUnit(Unit unit, Position position) => MoveUnit(unit, position.X, position.Y);
+
+        internal Unit AddUnit(Unit unit, Position position) => AddUnit(unit, position.X, position.Y);
+        internal Unit AddUnit(Unit unit, int x, int y)
+        {
             unit.Position.X = x;
             unit.Position.Y = y;
+            //in future may be add validate if unit exist at this position
             _map[y, x] = unit;
             return unit;
         }
-        internal Unit MoveUnit(Unit unit, Position position) => MoveUnit(unit, position.X, position.Y);
     }
 }

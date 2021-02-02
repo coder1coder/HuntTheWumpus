@@ -22,7 +22,7 @@ namespace HuntTheWumpus
 
             Map = new Map(width, height);
 
-            Player = (Player)Map.MoveUnit(new Player(), 
+            Player = (Player)Map.AddUnit(new Player(), 
                 (byte)Math.Ceiling((double)Map.Size.Width / 2), 
                 (byte)Math.Ceiling((double)Map.Size.Height / 2));
 
@@ -48,8 +48,7 @@ namespace HuntTheWumpus
             randX = 0;
             randY = 0;
 
-            Log.Add("Wumpus generated at " + randX + "," + randY);
-            Wumpus = (Wumpus)Map.MoveUnit(new Wumpus(), randX, randY);
+            Wumpus = (Wumpus)Map.AddUnit(new Wumpus(), randX, randY);
 
             //generate bats on map
             for (int i = 0; i < batsCount; i++)
@@ -59,9 +58,9 @@ namespace HuntTheWumpus
                     randX = _rand.Next(0, Map.Size.Width - 1);
                     randY = _rand.Next(0, Map.Size.Height - 1);
                 }
-                while (Map.GetUnitAtPosition(randX, randY) != null);
+                while (Map.GetUnit(randX, randY) != null);
 
-                Map.MoveUnit(new Bat(), randX, randY);
+                Map.AddUnit(new Bat(), randX, randY);
             }
 
             //generate holes on map
@@ -72,9 +71,9 @@ namespace HuntTheWumpus
                     randX = _rand.Next(0, Map.Size.Width - 1);
                     randY = _rand.Next(0, Map.Size.Height - 1);
                 }
-                while (Map.GetUnitAtPosition(randX, randY) != null);
+                while (Map.GetUnit(randX, randY) != null);
 
-                Map.MoveUnit(new Hole(), randX, randY);
+                Map.AddUnit(new Hole(), randX, randY);
             }
         }
         
@@ -124,7 +123,7 @@ namespace HuntTheWumpus
                 {
                     string content = " ";
 
-                    var unit = Map.GetUnitAtPosition(x, y);
+                    var unit = Map.GetUnit(x, y);
 
                     if (unit != null)
                     {
@@ -149,9 +148,9 @@ namespace HuntTheWumpus
                 {
                     if (y >= 0 && x >=0 && y < Map.Size.Height && x < Map.Size.Width)
                     {
-                        if (Map.GetUnitAtPosition(x,y) != null)
+                        if (Map.GetUnit(x,y) != null)
                         {
-                            switch (Map.GetUnitAtPosition(x, y))
+                            switch (Map.GetUnit(x, y))
                             {
                                 case Wumpus wumpus:
                                     Log.Add("Вы чувствуете вонь");
@@ -185,11 +184,11 @@ namespace HuntTheWumpus
             for (int i = 0; i < 4; i++)
             {
                 var canUsePosition =
-                    positions[i].X > 0 && positions[i].X < Map.Size.Width
+                    positions[i].X >= 0 && positions[i].X < Map.Size.Width
                     &&
-                    positions[i].Y > 0 && positions[i].Y < Map.Size.Height
+                    positions[i].Y >= 0 && positions[i].Y < Map.Size.Height
                     &&
-                    (Map.GetUnitAtPosition(positions[i]) == null || Map.GetUnitAtPosition(positions[i]) is Player);
+                    (Map.GetUnit(positions[i]) == null || Map.GetUnit(positions[i]) is Player);
 
                 if (canUsePosition)
                 {
@@ -198,9 +197,10 @@ namespace HuntTheWumpus
                 }
             }
 
-            var max = filteredPositions.Length - 1;
+            if (filteredPositions.Length == 0)
+                throw new Exception("Wumpus cant walk, wtf?");
 
-            var randIdx = _rand.Next(0, max);// - bag
+            var randIdx = _rand.Next(0, filteredPositions.Length - 1);// - bag
 
             Wumpus = (Wumpus)Map.MoveUnit(Wumpus, filteredPositions[randIdx]);
 
