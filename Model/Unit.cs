@@ -11,7 +11,7 @@
 
         public Unit()
         {
-            Position = new Position(0, 0);
+            Position = new Position();
             IsAlive = true;
         }
     }

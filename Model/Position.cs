@@ -7,8 +7,8 @@
 
         public Position()
         {
-            X = 0;
-            Y = 0;
+            //X = 0;
+            //Y = 0;
         }
         public Position(int x, int y)
         {
