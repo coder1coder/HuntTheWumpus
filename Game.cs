@@ -223,16 +223,16 @@ namespace HuntTheWumpus
                     Player = (Player)Map.MoveUnit(Player, Unit.Direction.RIGHT);
                     break;
                 case (ConsoleKey.W):
-                    Wumpus.IsAlive = Wumpus.Position.Y != Player.Position.Y - 1;
+                    Wumpus.IsAlive = !(Wumpus.Position.X == Player.Position.X && Wumpus.Position.Y == Player.Position.Y - 1);
                     break;
                 case (ConsoleKey.S):
-                    Wumpus.IsAlive = Wumpus.Position.Y != Player.Position.Y + 1;
+                    Wumpus.IsAlive = !(Wumpus.Position.X == Player.Position.X && Wumpus.Position.Y == Player.Position.Y + 1);
                     break;
                 case (ConsoleKey.A):
-                    Wumpus.IsAlive = Wumpus.Position.X != Player.Position.X - 1;
+                    Wumpus.IsAlive = !(Wumpus.Position.Y == Player.Position.Y && Wumpus.Position.X == Player.Position.X - 1);
                     break;
                 case (ConsoleKey.D):
-                    Wumpus.IsAlive = Wumpus.Position.X != Player.Position.X + 1;
+                    Wumpus.IsAlive = !(Wumpus.Position.Y == Player.Position.Y && Wumpus.Position.X == Player.Position.X + 1);
                     break;
             }
 
