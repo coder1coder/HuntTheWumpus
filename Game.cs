@@ -167,8 +167,6 @@ namespace HuntTheWumpus
                 }
         }
 
-        //may be has a bag, dont go to down
-        //fucking randomizer
         private void WumpusGo()
         {
             //Adding possible positions
@@ -200,7 +198,9 @@ namespace HuntTheWumpus
             if (filteredPositions.Length == 0)
                 throw new Exception("Wumpus cant walk, wtf?");
 
-            var randIdx = _rand.Next(0, filteredPositions.Length - 1);// - bag
+            filteredPositions = FuckingRandomArrayShuffle(filteredPositions, filteredPositions.Length);
+
+            var randIdx = _rand.Next(0, filteredPositions.Length - 1);
 
             Wumpus = (Wumpus)Map.MoveUnit(Wumpus, filteredPositions[randIdx]);
 
@@ -237,6 +237,19 @@ namespace HuntTheWumpus
             }
 
             Player.IsAlive = !(Wumpus.Position.X == Player.Position.X && Wumpus.Position.Y == Player.Position.Y);
+        }
+
+        static Position[] FuckingRandomArrayShuffle(Position[] arr, int n)
+        {
+            var r = new Random();
+            for (int i = n - 1; i > 0; i--)
+            {
+                int j = r.Next(0, i + 1);
+                var temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
+            }
+            return arr;
         }
     }
 }
