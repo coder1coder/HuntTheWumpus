@@ -9,6 +9,12 @@
             _log = message + "\r\n" + _log;
         }
 
+
+        public void Clear()
+        {
+            _log = string.Empty;
+        }
+
         public override string ToString()
         {
             return _log;

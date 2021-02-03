@@ -85,12 +85,13 @@ namespace HuntTheWumpus
 
             do
             {
-                Log.Add("====\tРаунд: " + Steps + "\t====");
+                Log.Clear();
+                Log.Add("Раунд: " + Steps);
                 Render();
 
                 input = Console.ReadKey(true);
 
-                if (input.Key == ConsoleKey.LeftArrow || input.Key == ConsoleKey.RightArrow 
+                if (   input.Key == ConsoleKey.LeftArrow || input.Key == ConsoleKey.RightArrow 
                     || input.Key == ConsoleKey.UpArrow || input.Key == ConsoleKey.DownArrow
                     || input.Key == ConsoleKey.W || input.Key == ConsoleKey.A
                     || input.Key == ConsoleKey.S || input.Key == ConsoleKey.D
