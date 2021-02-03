@@ -1,4 +1,6 @@
-﻿namespace HuntTheWumpus.Model
+﻿using System;
+
+namespace HuntTheWumpus.Model
 {
     class Map
     {
@@ -54,6 +56,9 @@
         internal Unit AddUnit(Unit unit, Position position) => AddUnit(unit, position.X, position.Y);
         internal Unit AddUnit(Unit unit, int x, int y)
         {
+            if (_map[y, x] != null)
+                throw new Exception("Can't add unit. Unit existsThe position is occupied by another unit.");
+
             unit.Position.X = x;
             unit.Position.Y = y;
             //in future may be add validate if unit exist at this position
