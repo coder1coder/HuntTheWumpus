@@ -31,8 +31,8 @@ namespace HuntTheWumpus
             //generate wumpus on map
             do
             {
-                randX = _rand.Next(0, Map.Size.Width - 1);
-                randY = _rand.Next(0, Map.Size.Height - 1);
+                randX = _rand.Next(0, Map.Size.Width);
+                randY = _rand.Next(0, Map.Size.Height);
             }
             while (
                 !(
@@ -55,8 +55,8 @@ namespace HuntTheWumpus
             {
                 do
                 {
-                    randX = _rand.Next(0, Map.Size.Width - 1);
-                    randY = _rand.Next(0, Map.Size.Height - 1);
+                    randX = _rand.Next(0, Map.Size.Width);
+                    randY = _rand.Next(0, Map.Size.Height);
                 }
                 while (Map.GetUnit(randX, randY) != null);
 
@@ -68,8 +68,8 @@ namespace HuntTheWumpus
             {
                 do
                 {
-                    randX = _rand.Next(0, Map.Size.Width - 1);
-                    randY = _rand.Next(0, Map.Size.Height - 1);
+                    randX = _rand.Next(0, Map.Size.Width);
+                    randY = _rand.Next(0, Map.Size.Height);
                 }
                 while (Map.GetUnit(randX, randY) != null);
 
@@ -198,9 +198,7 @@ namespace HuntTheWumpus
             if (filteredPositions.Length == 0)
                 throw new Exception("Wumpus cant walk, wtf?");
 
-            filteredPositions = FuckingRandomArrayShuffle(filteredPositions, filteredPositions.Length);
-
-            var randIdx = _rand.Next(0, filteredPositions.Length - 1);
+            var randIdx = _rand.Next(0, filteredPositions.Length);
 
             Wumpus = (Wumpus)Map.MoveUnit(Wumpus, filteredPositions[randIdx]);
 
@@ -237,19 +235,6 @@ namespace HuntTheWumpus
             }
 
             Player.IsAlive = !(Wumpus.Position.X == Player.Position.X && Wumpus.Position.Y == Player.Position.Y);
-        }
-
-        static Position[] FuckingRandomArrayShuffle(Position[] arr, int n)
-        {
-            var r = new Random();
-            for (int i = n - 1; i > 0; i--)
-            {
-                int j = r.Next(0, i + 1);
-                var temp = arr[i];
-                arr[i] = arr[j];
-                arr[j] = temp;
-            }
-            return arr;
         }
     }
 }
