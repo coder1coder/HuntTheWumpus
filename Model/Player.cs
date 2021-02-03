@@ -6,5 +6,16 @@
         {
             Symbol = "@";
         }
+
+        public override void Collision(Unit unit)
+        {
+            switch (unit)
+            {
+                case Bat _: 
+                case Hole _:
+                    IsAlive = false;
+                    break;
+            }
+        }
     }
 }

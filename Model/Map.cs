@@ -56,8 +56,7 @@ namespace HuntTheWumpus.Model
         internal Unit AddUnit(Unit unit, Position position) => AddUnit(unit, position.X, position.Y);
         internal Unit AddUnit(Unit unit, int x, int y)
         {
-            if (_map[y, x] != null)
-                throw new Exception("Can't add unit. Unit existsThe position is occupied by another unit.");
+            unit.Collision(_map[y, x]);
 
             unit.Position.X = x;
             unit.Position.Y = y;

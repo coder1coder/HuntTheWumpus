@@ -8,6 +8,10 @@
         public string Symbol { get; internal set; }
         public bool IsAlive { get; set; }
 
+        public virtual void Collision(Unit unit)
+        {
+            //do something
+        }
 
         public Unit()
         {

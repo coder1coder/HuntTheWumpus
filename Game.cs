@@ -234,8 +234,9 @@ namespace HuntTheWumpus
                     Wumpus.IsAlive = !(Wumpus.Position.Y == Player.Position.Y && Wumpus.Position.X == Player.Position.X + 1);
                     break;
             }
-
-            Player.IsAlive = !(Wumpus.Position.X == Player.Position.X && Wumpus.Position.Y == Player.Position.Y);
+            
+            if (Player.IsAlive)
+                Player.IsAlive = !(Wumpus.Position.X == Player.Position.X && Wumpus.Position.Y == Player.Position.Y);
         }
     }
 }
