@@ -98,11 +98,15 @@ namespace HuntTheWumpus
                     )
                 {
                     PlayerPressKey(input);
-                    WumpusGo();
-                    Steps++;
+
+                    if (Player.IsAlive && Wumpus.IsAlive)
+                    {
+                        WumpusGo();
+                        Steps++;
+                    }
                 }
             }
-            while (input.Key != ConsoleKey.Escape &&  Player.IsAlive && Wumpus.IsAlive);
+            while (input.Key != ConsoleKey.Escape && Player.IsAlive && Wumpus.IsAlive);
 
             Console.Clear();
             if (IsGameOver)
